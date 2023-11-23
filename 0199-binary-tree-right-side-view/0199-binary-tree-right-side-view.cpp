@@ -11,7 +11,7 @@
  */
 class Solution {
 public:
-    void rightView(TreeNode* root, vector<int> &ans, int level){
+    void rightView(TreeNode* &root, vector<int> &ans, int level){
         if(root == NULL) return;
         if(ans.size() == level)ans.push_back(root->val);
         rightView(root->right, ans, level+1);
