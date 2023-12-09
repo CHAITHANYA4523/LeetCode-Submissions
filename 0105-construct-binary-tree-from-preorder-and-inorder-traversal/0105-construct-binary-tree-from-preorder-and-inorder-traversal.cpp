@@ -11,33 +11,29 @@
  */
 class Solution {
 public:
-    //after every call it is creating new sub vectors with reccursion to solve for every sub tree
-    int findPosition(int x, vector<int> inorder, int n){
-        for(int i=0; i<n; i++){
-            if(x == inorder[i]) return i;
-        }
-        return -1;
-    }
+    unordered_map<int, int> inMap; // Hash map to store positions of elements in inorder vector
     // pass index by reference to keep it's updated value
-    TreeNode* solve(vector<int> pre, vector<int> in, int &index, int inOrderStart, int inOrderLast, int n){
-        //Base case
-        if(index >= n || inOrderStart > inOrderLast){
+    TreeNode* solve(vector<int>& pre, vector<int>& in, int &index, int inOrderStart, int inOrderLast){
+        if(index >= pre.size() || inOrderStart > inOrderLast){
             return NULL;
         }
         int element = pre[index++];
         TreeNode* root = new TreeNode(element);
-        int position = findPosition(element, in, n);
+        // Find the position of the current element in inorder vector using the map
+        int position = inMap[element];
 
-        //recursive  calls 
-        root->left = solve(pre, in, index, inOrderStart, position-1, n);
-        root->right = solve(pre, in, index, position+1, inOrderLast, n);
+        // Recursively build the left and right subtrees
+        root->left = solve(pre, in, index, inOrderStart, position-1);
+        root->right = solve(pre, in, index, position+1, inOrderLast);
         return root;
     }
+
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
         int preOrderIndex = 0;
-        int n = preorder.size();
-        // n-1 is the last index of inorder vector and 0 is the inorder first index
-        TreeNode* ans = solve(preorder, inorder, preOrderIndex, 0, n-1, n);
-        return ans;
+        // Fill the map with positions of elements in inorder vector
+        for(int i=0; i<inorder.size(); i++){
+            inMap[inorder[i]] = i;
+        }
+        return solve(preorder, inorder, preOrderIndex, 0, inorder.size()-1);
     }
 };
