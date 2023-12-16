@@ -11,16 +11,20 @@
  */
 class Solution {
 public:
-    priority_queue<int> maxHeap;
-    void inorderTraversal(TreeNode* root, int k){
+    int count = 0;
+    void inorderTraversal(TreeNode* root, int k, int &ans){
         if(!root) return;
-        inorderTraversal(root->left, k); 
-        maxHeap.push(root->val);
-        if(maxHeap.size() > k) maxHeap.pop();
-        inorderTraversal(root->right, k); 
+        inorderTraversal(root->left, k, ans); 
+        count++;
+        if(count == k){
+            ans = root->val;
+            return;
+        }
+        inorderTraversal(root->right, k, ans); 
     }
     int kthSmallest(TreeNode* root, int k) {
-        inorderTraversal(root, k);
-        return maxHeap.top();
+        int ans = -1;
+        inorderTraversal(root, k, ans);
+        return ans;
     }
 };
